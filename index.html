@@ -41,7 +41,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2
 .card-codes{text-align:right}
 .card-code3{font-size:.85rem;color:#94a3b8;font-weight:600}
 .card-code1{font-size:1.6rem;font-weight:700;color:#60a5fa;line-height:1}
-.card-struct{background:#ffffff;border-radius:8px;margin:8px 0;padding:4px;text-align:center;min-height:90px;display:flex;align-items:center;justify-content:center}
+.card-struct{background:#0f172a;border-radius:8px;margin:8px 0;padding:4px;text-align:center;min-height:90px;display:flex;align-items:center;justify-content:center}
 .card-struct canvas{max-width:100%;height:auto}
 .card-rgroup{font-size:.82rem;color:#94a3b8;margin:4px 0 6px;font-family:monospace}
 .card-tags{display:flex;flex-wrap:wrap;gap:4px}
@@ -60,7 +60,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2
 .modal-close:hover{color:#e2e8f0}
 .modal-body{padding:0 24px 24px}
 
-.struct-box{background:#ffffff;border:1px solid #334155;border-radius:10px;padding:12px;text-align:center;margin-bottom:16px;min-height:120px;display:flex;align-items:center;justify-content:center}
+.struct-box{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:12px;text-align:center;margin-bottom:16px;min-height:120px;display:flex;align-items:center;justify-content:center}
 .struct-box canvas{max-width:100%;height:auto;display:block;margin:0 auto}
 
 .props-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
@@ -349,20 +349,25 @@ const AA = [
 ];
 
 // ─── SMILESDRAWER RENDERING ────────────────────────────────────────────────────
-function drawStructure(canvas, smiles, width, height) {
-  const drawer = new SmilesDrawer.Drawer({ width, height });
+function drawStructure(canvas, smiles, opts) {
+  const drawer = new SmilesDrawer.Drawer(Object.assign({
+    compactDrawing: false,
+    explicitHydrogens: true,
+    terminalCarbons: false,
+    isomeric: true
+  }, opts));
   SmilesDrawer.parse(smiles, function(tree) {
-    drawer.draw(tree, canvas, 'light', false);
+    drawer.draw(tree, canvas, 'dark', false);
   }, function(err) { console.warn('SMILES parse error:', smiles, err); });
 }
 
 function drawAll() {
   if (typeof SmilesDrawer === 'undefined') { console.warn('SmilesDrawer not loaded'); return; }
   document.querySelectorAll('canvas[data-smiles]').forEach(function(c) {
-    drawStructure(c, c.getAttribute('data-smiles'), 300, 200);
+    drawStructure(c, c.getAttribute('data-smiles'), { width: 300, height: 200, fontSizeLarge: 10, bondThickness: 1.2 });
   });
   document.querySelectorAll('canvas[data-smiles-sm]').forEach(function(c) {
-    drawStructure(c, c.getAttribute('data-smiles-sm'), 190, 120);
+    drawStructure(c, c.getAttribute('data-smiles-sm'), { width: 190, height: 120, fontSizeLarge: 8, bondThickness: 1 });
   });
 }
 
