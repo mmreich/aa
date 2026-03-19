@@ -43,6 +43,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2
 .card-code1{font-size:1.6rem;font-weight:700;color:#60a5fa;line-height:1}
 .card-struct{background:#0f172a;border-radius:8px;margin:8px 0;padding:4px;text-align:center;min-height:90px;display:flex;align-items:center;justify-content:center}
 .card-struct canvas{max-width:100%;height:auto}
+.struct-img{filter:invert(1) hue-rotate(180deg);max-width:100%;height:auto;display:block;margin:0 auto}
 .card-rgroup{font-size:.82rem;color:#94a3b8;margin:4px 0 6px;font-family:monospace}
 .card-tags{display:flex;flex-wrap:wrap;gap:4px}
 .tag{background:#334155;color:#94a3b8;padding:2px 7px;border-radius:3px;font-size:.7rem}
@@ -162,7 +163,6 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2
   <div class="modal" id="modal"></div>
 </div>
 
-<script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
 <script>
 // ─── AMINO ACID DATA ───────────────────────────────────────────────────────────
 // smiles: full L-amino acid, neutral form (standard 2D depiction)
@@ -302,7 +302,7 @@ const AA = [
     mnemonic:'Q = Gln = Longer amide than Asn. Nitrogen carrier. Gut fuel.',
     pKa:{a:2.17,b:9.13}, codons:['CAA','CAG'] },
 
-  { id:'asp', name:'Aspartate',    a3:'Asp', a1:'D', cat:'ac', catLabel:'Acidic (–)',
+  { id:'asp', name:'Aspartate', pcName:'L-Aspartic acid',    a3:'Asp', a1:'D', cat:'ac', catLabel:'Acidic (–)',
     mw:133.1, pI:2.77, essential:false,
     smiles:'N[C@@H](CC(O)=O)C(O)=O',
     rGroup:'–CH₂COO⁻',
@@ -311,7 +311,7 @@ const AA = [
     mnemonic:'D = Asp = Deprotonated (negative) at pH 7. Neurotransmitter.',
     pKa:{a:1.88,b:9.60,c:3.65}, codons:['GAU','GAC'] },
 
-  { id:'glu', name:'Glutamate',    a3:'Glu', a1:'E', cat:'ac', catLabel:'Acidic (–)',
+  { id:'glu', name:'Glutamate', pcName:'L-Glutamic acid',    a3:'Glu', a1:'E', cat:'ac', catLabel:'Acidic (–)',
     mw:147.1, pI:3.22, essential:false,
     smiles:'N[C@@H](CCC(O)=O)C(O)=O',
     rGroup:'–CH₂CH₂COO⁻',
@@ -348,35 +348,20 @@ const AA = [
     pKa:{a:1.82,b:9.17,c:6.00}, codons:['CAU','CAC'] }
 ];
 
-// ─── SMILESDRAWER RENDERING ────────────────────────────────────────────────────
-function drawStructure(canvas, smiles, opts) {
-  const drawer = new SmilesDrawer.Drawer(Object.assign({
-    compactDrawing: false,
-    explicitHydrogens: true,
-    terminalCarbons: false,
-    isomeric: true
-  }, opts));
-  SmilesDrawer.parse(smiles, function(tree) {
-    drawer.draw(tree, canvas, 'dark', false);
-  }, function(err) { console.warn('SMILES parse error:', smiles, err); });
+// ─── STRUCTURE IMAGES (PubChem) ────────────────────────────────────────────────
+function pcName(aa) {
+  if (aa.pcName) return aa.pcName;
+  return aa.id === 'gly' ? 'Glycine' : 'L-' + aa.name;
 }
-
-function drawAll() {
-  if (typeof SmilesDrawer === 'undefined') { console.warn('SmilesDrawer not loaded'); return; }
-  document.querySelectorAll('canvas[data-smiles]').forEach(function(c) {
-    drawStructure(c, c.getAttribute('data-smiles'), { width: 300, height: 200, fontSizeLarge: 10, bondThickness: 1.2 });
-  });
-  document.querySelectorAll('canvas[data-smiles-sm]').forEach(function(c) {
-    drawStructure(c, c.getAttribute('data-smiles-sm'), { width: 190, height: 120, fontSizeLarge: 8, bondThickness: 1 });
-  });
+function pcUrl(aa, size) {
+  return 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/' +
+    encodeURIComponent(pcName(aa)) + '/PNG?image_size=' + size;
 }
-
-// Return canvas HTML — always call drawAll() after inserting into DOM
 function sdLg(aa) {
-  return `<canvas data-smiles="${aa.smiles}" width="300" height="200" style="max-width:100%;height:auto;display:block;margin:0 auto"></canvas>`;
+  return `<img src="${pcUrl(aa,'300x300')}" class="struct-img" alt="${aa.name} structure" loading="lazy">`;
 }
 function sdSm(aa) {
-  return `<canvas data-smiles-sm="${aa.smiles}" width="190" height="120" style="max-width:100%;height:auto;display:block;margin:0 auto"></canvas>`;
+  return `<img src="${pcUrl(aa,'200x200')}" class="struct-img" alt="${aa.name} structure" loading="lazy">`;
 }
 
 // ─── SPACED REPETITION (LEITNER) ──────────────────────────────────────────────
@@ -478,7 +463,6 @@ function renderQuizQ(){
     <div class="q-name-grid">${btns}</div>
     ${fb}
   </div>`;
-  drawAll();
 }
 
 function guessAA(id){
@@ -531,7 +515,6 @@ function renderLearn(){
       <div class="card-mastery">${dots}</div>
     </div>`;
   }).join('');
-  drawAll();
 }
 
 function setFilter(cat){activeFilter=cat;renderLearn();}
@@ -576,7 +559,7 @@ function showDetail(id){
   </div>`;
   const back=document.getElementById('modal-back');
   back.style.display='flex';
-  requestAnimationFrame(()=>{back.classList.add('show');drawAll();});
+  requestAnimationFrame(()=>{back.classList.add('show');});
 }
 
 function closeModal(e){
