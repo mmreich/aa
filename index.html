@@ -162,7 +162,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2
   <div class="modal" id="modal"></div>
 </div>
 
-<script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
+<script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
 <script>
 // ─── AMINO ACID DATA ───────────────────────────────────────────────────────────
 // smiles: full L-amino acid, neutral form (standard 2D depiction)
@@ -348,16 +348,22 @@ const AA = [
     pKa:{a:1.82,b:9.17,c:6.00}, codons:['CAU','CAC'] }
 ];
 
-// ─── SMILESDRAWER RENDERING (v2.2.1 API) ──────────────────────────────────────
-// Confirmed API from bundle:
-//   SmilesDrawer.apply(drawerOpts, svgOpts, dataAttribute, theme)
-// This finds every canvas with the given data attribute and renders to it.
-// Two attribute names let us use different drawer dimensions per size.
+// ─── SMILESDRAWER RENDERING ────────────────────────────────────────────────────
+function drawStructure(canvas, smiles, width, height) {
+  const drawer = new SmilesDrawer.Drawer({ width, height });
+  SmilesDrawer.parse(smiles, function(tree) {
+    drawer.draw(tree, canvas, 'dark', false);
+  }, function(err) { console.warn('SMILES parse error:', smiles, err); });
+}
 
 function drawAll() {
   if (typeof SmilesDrawer === 'undefined') { console.warn('SmilesDrawer not loaded'); return; }
-  SmilesDrawer.apply({ width: 300, height: 200 }, {}, 'data-smiles',    'dark');
-  SmilesDrawer.apply({ width: 190, height: 120 }, {}, 'data-smiles-sm', 'dark');
+  document.querySelectorAll('canvas[data-smiles]').forEach(function(c) {
+    drawStructure(c, c.getAttribute('data-smiles'), 300, 200);
+  });
+  document.querySelectorAll('canvas[data-smiles-sm]').forEach(function(c) {
+    drawStructure(c, c.getAttribute('data-smiles-sm'), 190, 120);
+  });
 }
 
 // Return canvas HTML — always call drawAll() after inserting into DOM
