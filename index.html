@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amino Acids Academy</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+:root{--np:#d97706;--ar:#7c3aed;--po:#0891b2;--ac:#dc2626;--ba:#16a34a}
+
+.nav{display:flex;align-items:center;gap:4px;padding:0 20px;background:#1e293b;border-bottom:1px solid #334155;flex-wrap:wrap}
+.nav-brand{font-size:1.05rem;font-weight:700;color:#60a5fa;padding:14px 12px 14px 0;margin-right:8px;white-space:nowrap}
+.nav-btn{background:none;border:none;color:#94a3b8;padding:14px 14px;cursor:pointer;font-size:0.9rem;font-weight:500;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
+.nav-btn:hover{color:#e2e8f0}
+.nav-btn.active{color:#60a5fa;border-bottom-color:#60a5fa}
+
+.section{display:none}.section.active{display:block}
+.main{padding:24px;max-width:1100px;margin:0 auto}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.np{background:rgba(217,119,6,.2);color:#fbbf24}
+.ar{background:rgba(124,58,237,.2);color:#a78bfa}
+.po{background:rgba(8,145,178,.2);color:#38bdf8}
+.ac{background:rgba(220,38,38,.2);color:#f87171}
+.ba{background:rgba(22,163,74,.2);color:#4ade80}
+
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:.78rem;color:#94a3b8;cursor:pointer;padding:4px 10px;border-radius:20px;border:1px solid #334155;transition:all .2s}
+.legend-item:hover,.legend-item.active{background:#1e293b;color:#e2e8f0;border-color:#475569}
+.ldot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.aa-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:18px 20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.aa-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.aa-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.aa-card.np::before{background:var(--np)}.aa-card.ar::before{background:var(--ar)}
+.aa-card.po::before{background:var(--po)}.aa-card.ac::before{background:var(--ac)}.aa-card.ba::before{background:var(--ba)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.card-name{font-size:1rem;font-weight:600}
+.card-codes{text-align:right}
+.card-code3{font-size:.85rem;color:#94a3b8;font-weight:600}
+.card-code1{font-size:1.6rem;font-weight:700;color:#60a5fa;line-height:1}
+.card-struct{background:#0f172a;border-radius:8px;margin:8px 0;padding:4px;text-align:center;min-height:90px;display:flex;align-items:center;justify-content:center}
+.card-struct canvas{max-width:100%;height:auto}
+.card-rgroup{font-size:.82rem;color:#94a3b8;margin:4px 0 6px;font-family:monospace}
+.card-tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{background:#334155;color:#94a3b8;padding:2px 7px;border-radius:3px;font-size:.7rem}
+.card-mastery{display:flex;gap:3px;margin-top:8px}
+.md{width:6px;height:6px;border-radius:50%;background:#334155}
+.md.on{background:#60a5fa}
+
+.modal-back{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;opacity:0;transition:opacity .2s}
+.modal-back.show{opacity:1}
+.modal{background:#1e293b;border:1px solid #334155;border-radius:16px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;transform:scale(.95);transition:transform .2s}
+.modal-back.show .modal{transform:scale(1)}
+.modal-hdr{display:flex;justify-content:space-between;align-items:flex-start;padding:24px 24px 16px}
+.modal-title{font-size:1.4rem;font-weight:700}
+.modal-close{background:none;border:none;color:#64748b;font-size:1.4rem;cursor:pointer;line-height:1;padding:0 4px}
+.modal-close:hover{color:#e2e8f0}
+.modal-body{padding:0 24px 24px}
+
+.struct-box{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:12px;text-align:center;margin-bottom:16px;min-height:120px;display:flex;align-items:center;justify-content:center}
+.struct-box canvas{max-width:100%;height:auto;display:block;margin:0 auto}
+
+.props-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.prop{background:#0f172a;border-radius:8px;padding:12px}
+.prop-lbl{font-size:.68rem;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.prop-val{font-size:.95rem;font-weight:600}
+.prop-val.es{color:#4ade80}.prop-val.ne{color:#f87171}
+.section-hdr{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin:14px 0 8px}
+.detail-text{font-size:.88rem;color:#cbd5e1;line-height:1.6}
+.codons{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.codon{background:#334155;color:#94a3b8;padding:2px 7px;border-radius:4px;font-size:.75rem;font-family:monospace}
+
+/* QUIZ */
+.quiz-wrap{max-width:580px;margin:0 auto}
+.quiz-start{text-align:center;padding:40px 24px;background:#1e293b;border:1px solid #334155;border-radius:16px}
+.quiz-start h2{font-size:1.3rem;margin-bottom:10px}
+.quiz-start p{color:#94a3b8;margin-bottom:24px;line-height:1.6;font-size:.9rem}
+.leitner-vis{display:flex;gap:8px;justify-content:center;margin:20px 0}
+.l-box{text-align:center;flex:1;max-width:70px}
+.l-bar-wrap{height:70px;background:#0f172a;border:1px solid #334155;border-radius:6px;display:flex;align-items:flex-end;overflow:hidden}
+.l-bar-fill{width:100%;transition:height .6s;border-radius:0 0 4px 4px}
+.l-box-num{font-size:.85rem;font-weight:700;margin-top:4px}
+.l-box-lbl{font-size:.62rem;color:#64748b}
+.btn-primary{background:#3b82f6;border:none;color:white;padding:12px 28px;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-primary:hover{background:#2563eb}
+
+.qprog{background:#1e293b;border-radius:8px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.qprog-bar{flex:1;height:5px;background:#334155;border-radius:3px;overflow:hidden}
+.qprog-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:3px;transition:width .4s}
+.qprog-txt{font-size:.8rem;color:#64748b;white-space:nowrap}
+.streak{font-size:.8rem;color:#f59e0b;white-space:nowrap}
+.q-card{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:24px;margin-bottom:14px}
+.q-type{font-size:.7rem;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.q-text{font-size:1.05rem;font-weight:600;line-height:1.45;margin-bottom:16px}
+.q-feedback{margin-top:14px;padding:14px;border-radius:9px;font-size:.85rem;line-height:1.55}
+.q-feedback.correct{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);color:#86efac}
+.q-feedback.wrong{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#fca5a5}
+.q-next{width:100%;padding:13px;background:#3b82f6;border:none;border-radius:9px;color:white;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:13px;transition:background .2s}
+.q-next:hover{background:#2563eb}
+.guess-slots{display:flex;gap:8px;justify-content:center;margin:14px 0 6px}
+.guess-slot{width:30px;height:30px;border-radius:50%;border:2px solid #334155;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;transition:all .25s}
+.guess-slot.wrong{background:#dc2626;border-color:#dc2626;color:white}
+.guess-slot.correct{background:#22c55e;border-color:#22c55e;color:white}
+.guess-slot.pending{border-color:#475569}
+.q-name-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:14px}
+@media(max-width:480px){.q-name-grid{grid-template-columns:repeat(2,1fr)}}
+.q-name-btn{background:#0f172a;border:2px solid #334155;border-radius:8px;padding:9px 4px;cursor:pointer;font-size:.8rem;font-weight:500;color:#e2e8f0;transition:all .2s;text-align:center;line-height:1.2}
+.q-name-btn:hover:not(:disabled){border-color:#60a5fa;background:#1e293b}
+.q-name-btn.wrong{border-color:#dc2626;background:rgba(220,38,38,.12);color:#f87171;text-decoration:line-through;opacity:.55}
+.q-name-btn.correct{border-color:#22c55e;background:rgba(34,197,94,.15);color:#4ade80;font-weight:700}
+.q-name-btn:disabled{cursor:default}
+.q-hints{margin:10px 0 4px;display:flex;flex-direction:column;gap:5px}
+.q-hint-item{font-size:.83rem;color:#94a3b8;padding:7px 10px;background:#0f172a;border-radius:6px;border-left:3px solid #475569}
+
+/* PROGRESS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;text-align:center}
+.stat-num{font-size:1.9rem;font-weight:700;color:#60a5fa}
+.stat-lbl{font-size:.75rem;color:#64748b;margin-top:3px}
+.prog-table{background:#1e293b;border:1px solid #334155;border-radius:12px;overflow:hidden}
+.prog-row{display:grid;grid-template-columns:140px 50px 50px 80px 1fr 60px;gap:12px;padding:11px 16px;align-items:center;border-top:1px solid #334155;font-size:.85rem}
+.prog-row:first-child{border-top:none;background:#0f172a;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;font-weight:600}
+.prog-bar-wrap{height:5px;background:#334155;border-radius:3px;overflow:hidden}
+.prog-bar{height:100%;border-radius:3px;transition:width .6s}
+
+.ref-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.ref-table th{background:#0f172a;padding:10px 12px;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;font-weight:600;position:sticky;top:0}
+.ref-table td{padding:10px 12px;border-top:1px solid #334155}
+.ref-table tr:hover td{background:rgba(255,255,255,.02)}
+.ref-table .code{font-family:monospace;font-size:.95rem;font-weight:700;color:#60a5fa}
+
+@media(max-width:600px){
+  .props-grid{grid-template-columns:1fr}
+  .prog-row{grid-template-columns:1fr 1fr;gap:6px}
+  .prog-row>*:nth-child(n+5){display:none}
+  .cards-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">Amino Acids Academy</div>
+  <button class="nav-btn active" onclick="nav('learn')">Learn</button>
+  <button class="nav-btn" onclick="nav('quiz')">Quiz</button>
+  <button class="nav-btn" onclick="nav('progress')">Progress</button>
+  <button class="nav-btn" onclick="nav('reference')">Reference</button>
+</nav>
+
+<div id="learn" class="section active main">
+  <div class="legend" id="legend"></div>
+  <div class="cards-grid" id="cards-grid"></div>
+</div>
+<div id="quiz" class="section main"><div class="quiz-wrap" id="quiz-wrap"></div></div>
+<div id="progress" class="section main"><div id="progress-content"></div></div>
+<div id="reference" class="section main"><div style="overflow-x:auto"><table class="ref-table" id="ref-table"></table></div></div>
+
+<div class="modal-back" id="modal-back" onclick="closeModal(event)">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
+<script>
+// ─── AMINO ACID DATA ───────────────────────────────────────────────────────────
+// smiles: full L-amino acid, neutral form (standard 2D depiction)
+const AA = [
+  { id:'gly', name:'Glycine',      a3:'Gly', a1:'G', cat:'np', catLabel:'Nonpolar Aliphatic',
+    mw:75.0,  pI:5.97, essential:false,
+    smiles:'NCC(O)=O',
+    rGroup:'–H',
+    properties:['Achiral (no chiral center)','Smallest amino acid','Most flexible backbone','Found in tight turns & collagen'],
+    roles:'Inhibitory neurotransmitter (glycine receptor). Key for collagen triple helix. Conjugates with bile acids. One-carbon metabolism.',
+    mnemonic:'G = tiniest, no side chain—just H. The only amino acid without a chiral center.',
+    pKa:{a:2.34,b:9.60}, codons:['GGU','GGC','GGA','GGG'] },
+
+  { id:'ala', name:'Alanine',      a3:'Ala', a1:'A', cat:'np', catLabel:'Nonpolar Aliphatic',
+    mw:89.0,  pI:6.00, essential:false,
+    smiles:'N[C@@H](C)C(O)=O',
+    rGroup:'–CH₃',
+    properties:['Methyl side chain','Most abundant in proteins','Mildly hydrophobic','Glucogenic'],
+    roles:'Alanine cycle: shuttles amino groups from muscle to liver. Major gluconeogenic substrate.',
+    mnemonic:'A = Alanine = just a methyl group. Very abundant.',
+    pKa:{a:2.35,b:9.87}, codons:['GCU','GCC','GCA','GCG'] },
+
+  { id:'val', name:'Valine',       a3:'Val', a1:'V', cat:'np', catLabel:'Nonpolar Aliphatic',
+    mw:117.1, pI:5.97, essential:true,
+    smiles:'N[C@@H](C(C)C)C(O)=O',
+    rGroup:'–CH(CH₃)₂',
+    properties:['Branched isopropyl side chain','Hydrophobic core packing','β-sheet former','BCAA'],
+    roles:'BCAA—metabolized in muscle, not liver. Critical for β-sheet structure. Val→Glu mutation causes sickle-cell hemoglobin (HbS).',
+    mnemonic:'V = Valine = V-shaped branch. BCAA. Val→Glu = sickle cell.',
+    pKa:{a:2.32,b:9.62}, codons:['GUU','GUC','GUA','GUG'] },
+
+  { id:'leu', name:'Leucine',      a3:'Leu', a1:'L', cat:'np', catLabel:'Nonpolar Aliphatic',
+    mw:131.2, pI:5.98, essential:true,
+    smiles:'N[C@@H](CC(C)C)C(O)=O',
+    rGroup:'–CH₂CH(CH₃)₂',
+    properties:['Branched isobutyl side chain','Most abundant amino acid in proteins','Hydrophobic core','BCAA'],
+    roles:'Most abundant amino acid in proteins. BCAA—activates mTOR signaling. Key for hydrophobic core packing and leucine zippers.',
+    mnemonic:'L = Leucine = Lots of it. mTOR activator. Leucine zippers.',
+    pKa:{a:2.36,b:9.60}, codons:['UUA','UUG','CUU','CUC','CUA','CUG'] },
+
+  { id:'ile', name:'Isoleucine',   a3:'Ile', a1:'I', cat:'np', catLabel:'Nonpolar Aliphatic',
+    mw:131.2, pI:6.02, essential:true,
+    smiles:'N[C@@H]([C@@H](C)CC)C(O)=O',
+    rGroup:'–CH(CH₃)CH₂CH₃',
+    properties:['Branched sec-butyl side chain','Two chiral centers (Cα & Cβ)','Hydrophobic','BCAA'],
+    roles:'BCAA with two chiral centers. Interior protein packing. Metabolized to succinyl-CoA and acetyl-CoA.',
+    mnemonic:'I = Isoleucine = irregular branch, two chiral centers. BCAA.',
+    pKa:{a:2.36,b:9.60}, codons:['AUU','AUC','AUA'] },
+
+  { id:'pro', name:'Proline',      a3:'Pro', a1:'P', cat:'np', catLabel:'Nonpolar Aliphatic',
+    mw:115.1, pI:6.30, essential:false,
+    smiles:'OC(=O)[C@@H]1CCCN1',
+    rGroup:'Cyclic pyrrolidine (N-Cα in ring)',
+    properties:['Secondary amine — imino acid','Pyrrolidine ring locks backbone φ angle','α-helix breaker','Abundant in collagen'],
+    roles:'Breaks α-helices; forms cis peptide bonds. Abundant in collagen. Hydroxylated to 4-hydroxyproline by prolyl hydroxylase (requires vitamin C).',
+    mnemonic:'P = Proline = Peculiar cyclic. Helix breaker. Collagen + Vit C → Hydroxyproline.',
+    pKa:{a:1.99,b:10.60}, codons:['CCU','CCC','CCA','CCG'] },
+
+  { id:'met', name:'Methionine',   a3:'Met', a1:'M', cat:'np', catLabel:'Nonpolar Aliphatic',
+    mw:149.2, pI:5.74, essential:true,
+    smiles:'N[C@@H](CCSC)C(O)=O',
+    rGroup:'–CH₂CH₂SCH₃',
+    properties:['Thioether side chain','Initiator: start codon AUG','Methyl donor via SAM','Flexible'],
+    roles:'Every protein begins with Met (AUG). Converted to SAM (S-adenosylmethionine)—universal methyl donor for DNA, RNA, protein, and lipid methylation.',
+    mnemonic:'M = Met = Must start every protein (AUG). SAM methyl donor.',
+    pKa:{a:2.28,b:9.21}, codons:['AUG'] },
+
+  { id:'phe', name:'Phenylalanine',a3:'Phe', a1:'F', cat:'ar', catLabel:'Aromatic',
+    mw:165.2, pI:5.48, essential:true,
+    smiles:'N[C@@H](Cc1ccccc1)C(O)=O',
+    rGroup:'–CH₂–C₆H₅',
+    properties:['Benzyl (phenylmethyl) side chain','Most hydrophobic aromatic','UV absorption ~257 nm','Precursor to Tyr'],
+    roles:'Precursor to tyrosine and catecholamines. Phenylalanine hydroxylase deficiency causes PKU (phenylketonuria). UV absorbance ~257 nm.',
+    mnemonic:'F = Phe = phenyl ring, no OH. PKU disease = Phe buildup.',
+    pKa:{a:1.83,b:9.13}, codons:['UUU','UUC'] },
+
+  { id:'tyr', name:'Tyrosine',     a3:'Tyr', a1:'Y', cat:'ar', catLabel:'Aromatic',
+    mw:181.2, pI:5.66, essential:false,
+    smiles:'N[C@@H](Cc1ccc(O)cc1)C(O)=O',
+    rGroup:'–CH₂–C₆H₄–4-OH',
+    properties:['4-Hydroxybenzyl side chain','pKa ~10.1 (phenol)','Major phosphorylation target','UV ~274 nm'],
+    roles:'Phosphorylated by tyrosine kinases (signaling). Precursor to dopamine, adrenaline, noradrenaline, T3/T4 thyroid hormones, and melanin. UV abs ~274 nm.',
+    mnemonic:'Y = tYr = Tyr has OH on the para ring position. Phosphorylation hub. Catecholamine precursor.',
+    pKa:{a:2.20,b:9.11,c:10.07}, codons:['UAU','UAC'] },
+
+  { id:'trp', name:'Tryptophan',   a3:'Trp', a1:'W', cat:'ar', catLabel:'Aromatic',
+    mw:204.2, pI:5.89, essential:true,
+    smiles:'N[C@@H](Cc1c[nH]c2ccccc12)C(O)=O',
+    rGroup:'–CH₂–indol-3-yl',
+    properties:['Indole bicyclic ring','Largest standard amino acid','Strongest UV absorber at ~280 nm','Rarest amino acid'],
+    roles:'Precursor to serotonin, melatonin, and niacin (B3). Indole absorbs UV at ~280 nm—used to quantify proteins (A280). Rarest amino acid in most proteomes.',
+    mnemonic:'W = Trp = Whopping indole. Serotonin precursor. A280 = 280 nm protein quantification.',
+    pKa:{a:2.38,b:9.39}, codons:['UGG'] },
+
+  { id:'ser', name:'Serine',       a3:'Ser', a1:'S', cat:'po', catLabel:'Polar Uncharged',
+    mw:105.1, pI:5.68, essential:false,
+    smiles:'N[C@@H](CO)C(O)=O',
+    rGroup:'–CH₂OH',
+    properties:['Hydroxymethyl side chain','Major phosphorylation target','H-bond donor and acceptor','Active-site nucleophile in Ser proteases'],
+    roles:'Phosphorylated by Ser/Thr kinases. Active-site nucleophile in serine proteases (trypsin, chymotrypsin, elastase). O-linked glycosylation site. Precursor to cysteine.',
+    mnemonic:'S = Ser = Short chain with OH. Serine protease active site. Phosphorylated.',
+    pKa:{a:2.21,b:9.15}, codons:['UCU','UCC','UCA','UCG','AGU','AGC'] },
+
+  { id:'thr', name:'Threonine',    a3:'Thr', a1:'T', cat:'po', catLabel:'Polar Uncharged',
+    mw:119.1, pI:6.16, essential:true,
+    smiles:'N[C@@H]([C@@H](O)C)C(O)=O',
+    rGroup:'–CH(OH)–CH₃',
+    properties:['β-Hydroxy-α-methylethyl side chain','Two chiral centers (Cα & Cβ)','Phosphorylation target','H-bond donor and acceptor'],
+    roles:'Phosphorylated by Ser/Thr kinases. Two chiral centers. O-linked glycosylation site. Essential—cannot be synthesized de novo in mammals.',
+    mnemonic:'T = Thr = Two chiral centers. OH and CH₃ on Cβ.',
+    pKa:{a:2.15,b:9.12}, codons:['ACU','ACC','ACA','ACG'] },
+
+  { id:'cys', name:'Cysteine',     a3:'Cys', a1:'C', cat:'po', catLabel:'Polar Uncharged',
+    mw:121.2, pI:5.07, essential:false,
+    smiles:'N[C@@H](CS)C(O)=O',
+    rGroup:'–CH₂SH',
+    properties:['Thiol (–SH) side chain','pKa ~8.3','Forms disulfide bonds (–S–S–)','Strongest nucleophile among AA'],
+    roles:'Forms disulfide bonds that stabilize protein 3D structure. Active-site nucleophile. Coordinates Zn²⁺ in zinc fingers. Glutathione (γ-Glu–Cys–Gly) antioxidant component.',
+    mnemonic:'C = Cys = Crosslinker: –SH → –S–S–. Glutathione. Most reactive AA.',
+    pKa:{a:1.96,b:10.28,c:8.14}, codons:['UGU','UGC'] },
+
+  { id:'asn', name:'Asparagine',   a3:'Asn', a1:'N', cat:'po', catLabel:'Polar Uncharged',
+    mw:132.1, pI:5.41, essential:false,
+    smiles:'N[C@@H](CC(N)=O)C(O)=O',
+    rGroup:'–CH₂CONH₂',
+    properties:['Amide side chain','H-bond donor and acceptor','N-linked glycosylation site','Cannot ionize'],
+    roles:'N-linked glycosylation attachment point (sequon: Asn–X–Ser/Thr). Cannot ionize. Asparagine deamidation is a protein aging marker.',
+    mnemonic:'N = Asn = amide side chain. N-glycosylation on Asn.',
+    pKa:{a:2.02,b:8.80}, codons:['AAU','AAC'] },
+
+  { id:'gln', name:'Glutamine',    a3:'Gln', a1:'Q', cat:'po', catLabel:'Polar Uncharged',
+    mw:146.2, pI:5.65, essential:false,
+    smiles:'N[C@@H](CCC(N)=O)C(O)=O',
+    rGroup:'–CH₂CH₂CONH₂',
+    properties:['Amide side chain (one CH₂ longer than Asn)','Most abundant free AA in plasma','Nitrogen transporter','Fuel for fast-dividing cells'],
+    roles:'Predominant nitrogen carrier in blood. Primary fuel for enterocytes and immune cells. Nitrogen donor for purine, pyrimidine, and glucosamine biosynthesis.',
+    mnemonic:'Q = Gln = Longer amide than Asn. Nitrogen carrier. Gut fuel.',
+    pKa:{a:2.17,b:9.13}, codons:['CAA','CAG'] },
+
+  { id:'asp', name:'Aspartate',    a3:'Asp', a1:'D', cat:'ac', catLabel:'Acidic (–)',
+    mw:133.1, pI:2.77, essential:false,
+    smiles:'N[C@@H](CC(O)=O)C(O)=O',
+    rGroup:'–CH₂COO⁻',
+    properties:['β-Carboxylate side chain','pKa ~3.9 → negative at pH 7','Nucleophile','Excitatory neurotransmitter'],
+    roles:'Excitatory neurotransmitter. Urea cycle intermediate. Malate–aspartate shuttle. Purine biosynthesis. Active site of aspartyl proteases (e.g. pepsin, HIV protease).',
+    mnemonic:'D = Asp = Deprotonated (negative) at pH 7. Neurotransmitter.',
+    pKa:{a:1.88,b:9.60,c:3.65}, codons:['GAU','GAC'] },
+
+  { id:'glu', name:'Glutamate',    a3:'Glu', a1:'E', cat:'ac', catLabel:'Acidic (–)',
+    mw:147.1, pI:3.22, essential:false,
+    smiles:'N[C@@H](CCC(O)=O)C(O)=O',
+    rGroup:'–CH₂CH₂COO⁻',
+    properties:['γ-Carboxylate side chain','pKa ~4.3 → negative at pH 7','Most abundant excitatory neurotransmitter','Precursor to GABA'],
+    roles:'Most abundant excitatory neurotransmitter. Precursor to GABA (inhibitory). Links to Krebs cycle via α-ketoglutarate. Glutamate dehydrogenase. Part of glutathione.',
+    mnemonic:'E = Glu = Excitatory. One CH₂ longer than Asp. → GABA.',
+    pKa:{a:2.19,b:9.67,c:4.25}, codons:['GAA','GAG'] },
+
+  { id:'lys', name:'Lysine',       a3:'Lys', a1:'K', cat:'ba', catLabel:'Basic (+)',
+    mw:146.2, pI:9.74, essential:true,
+    smiles:'N[C@@H](CCCCN)C(O)=O',
+    rGroup:'–(CH₂)₄–NH₃⁺',
+    properties:['ε-Amino group (pKa ~10.5)','Positive at pH 7','Binds DNA & RNA phosphates','Acetylation/ubiquitination site (histone code)'],
+    roles:'Binds DNA/RNA (positive charge). ε-NH₂ is acetylated, methylated, or ubiquitinated (histone epigenetic code). Collagen cross-linking via lysyl oxidase (LOX). Schiff base enzyme cofactor.',
+    mnemonic:'K = Lys = Long +NH₃ chain. Histone modifications (Ac, Ub, Me).',
+    pKa:{a:2.18,b:8.95,c:10.53}, codons:['AAA','AAG'] },
+
+  { id:'arg', name:'Arginine',     a3:'Arg', a1:'R', cat:'ba', catLabel:'Basic (+)',
+    mw:174.2, pI:10.76, essential:true,
+    smiles:'N[C@@H](CCCNC(=N)N)C(O)=O',
+    rGroup:'–(CH₂)₃–NH–C(=NH)–NH₂',
+    properties:['Guanidinium side chain (pKa ~12.5)','Most basic amino acid','Always protonated at pH 7','Substrate for nitric oxide synthase'],
+    roles:'Substrate for NO synthase → nitric oxide (vasodilation). Most basic AA—guanidinium always charged. Urea cycle intermediate. Epigenetic methylation target. Binds phosphate groups strongly.',
+    mnemonic:'R = Arg = Really basic (pKa 12.5). NO precursor. Urea cycle.',
+    pKa:{a:2.17,b:9.04,c:12.48}, codons:['CGU','CGC','CGA','CGG','AGA','AGG'] },
+
+  { id:'his', name:'Histidine',    a3:'His', a1:'H', cat:'ba', catLabel:'Basic (+)',
+    mw:155.2, pI:7.59, essential:true,
+    smiles:'N[C@@H](Cc1cnc[nH]1)C(O)=O',
+    rGroup:'–CH₂–imidazol-4-yl',
+    properties:['Imidazole side chain (pKa ~6.0)','Only AA titratable at physiological pH','Acid–base catalyst in enzyme active sites','Coordinates metal ions (Zn²⁺, Fe²⁺)'],
+    roles:'Only AA with pKa near 7.4—ideal acid/base catalyst. Imidazole in serine protease catalytic triad (His–Asp–Ser). Proximal His in hemoglobin coordinates heme Fe. Zn²⁺ binding in zinc enzymes.',
+    mnemonic:'H = His = imidazole pKa ~6 ≈ physiological pH. Catalytic triad. Metal binding.',
+    pKa:{a:1.82,b:9.17,c:6.00}, codons:['CAU','CAC'] }
+];
+
+// ─── SMILESDRAWER RENDERING (v2.2.1 API) ──────────────────────────────────────
+// Confirmed API from bundle:
+//   SmilesDrawer.apply(drawerOpts, svgOpts, dataAttribute, theme)
+// This finds every canvas with the given data attribute and renders to it.
+// Two attribute names let us use different drawer dimensions per size.
+
+function drawAll() {
+  if (typeof SmilesDrawer === 'undefined') { console.warn('SmilesDrawer not loaded'); return; }
+  SmilesDrawer.apply({ width: 300, height: 200 }, {}, 'data-smiles',    'dark');
+  SmilesDrawer.apply({ width: 190, height: 120 }, {}, 'data-smiles-sm', 'dark');
+}
+
+// Return canvas HTML — always call drawAll() after inserting into DOM
+function sdLg(aa) {
+  return `<canvas data-smiles="${aa.smiles}" width="300" height="200" style="max-width:100%;height:auto;display:block;margin:0 auto"></canvas>`;
+}
+function sdSm(aa) {
+  return `<canvas data-smiles-sm="${aa.smiles}" width="190" height="120" style="max-width:100%;height:auto;display:block;margin:0 auto"></canvas>`;
+}
+
+// ─── SPACED REPETITION (LEITNER) ──────────────────────────────────────────────
+function getLS(){try{return JSON.parse(localStorage.getItem('aa_leitner')||'{}')}catch{return{}}}
+function saveLS(d){localStorage.setItem('aa_leitner',JSON.stringify(d))}
+function getLeitner(id){return getLS()[id]||{box:1,nextReview:0,correct:0,wrong:0}}
+function updateLeitner(id,ok){
+  const d=getLS(), s=d[id]||{box:1,nextReview:0,correct:0,wrong:0};
+  const IVLS=[0,1,3,7,14,30];
+  if(ok){s.box=Math.min(5,s.box+1);s.correct=(s.correct||0)+1}
+  else{s.box=1;s.wrong=(s.wrong||0)+1}
+  s.nextReview=Date.now()+IVLS[s.box]*86400000;
+  d[id]=s; saveLS(d);
+}
+function getMastery(id){const s=getLeitner(id),t=(s.correct||0)+(s.wrong||0);return t?Math.round((s.correct||0)/t*100):0}
+function getBox(id){return getLeitner(id).box}
+
+// ─── QUIZ ─────────────────────────────────────────────────────────────────────
+const MAX_GUESSES = 5;
+const HINTS = [
+  aa => `Category: <strong>${aa.catLabel}</strong>`,
+  aa => `R-group: <strong style="font-family:monospace">${aa.rGroup}</strong>`,
+  aa => `<strong>${aa.essential ? 'Essential (must obtain from diet)' : 'Non-essential (body can synthesize)'}</strong>`,
+  aa => `One-letter code: <strong style="font-size:1.3rem;color:#60a5fa;font-family:monospace">${aa.a1}</strong>`,
+];
+
+function pickQuizAA(){
+  const w=AA.map(a=>6-getBox(a.id)), tot=w.reduce((s,x)=>s+x,0);
+  let r=Math.random()*tot;
+  for(let i=0;i<AA.length;i++){r-=w[i];if(r<=0)return AA[i];}
+  return AA[Math.floor(Math.random()*AA.length)];
+}
+
+function shuffleArr(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+function generateQuestion(){const aa=pickQuizAA();return{aa,feedback:`<strong>${aa.name} (${aa.a3}, ${aa.a1})</strong> — ${aa.catLabel}. R-group: ${aa.rGroup}. ${aa.roles.split('.')[0]}.`}}
+
+let qs={active:false,q:null,guessesLeft:MAX_GUESSES,wrongGuesses:[],solved:false,done:false,streak:0,score:0};
+
+function startQuiz(){
+  qs={active:true,q:generateQuestion(),guessesLeft:MAX_GUESSES,wrongGuesses:[],solved:false,done:false,streak:qs.streak||0,score:qs.score||0};
+  renderQuizQ();
+}
+
+function renderQuizStart(){
+  const d=getLS(), boxes=[0,0,0,0,0,0];
+  AA.forEach(a=>{const s=d[a.id];if(s)boxes[s.box]++;else boxes[1]++;});
+  const maxB=Math.max(...boxes.slice(1));
+  const colors=['','#ef4444','#f97316','#eab308','#3b82f6','#22c55e'];
+  let lvis='';
+  for(let i=1;i<=5;i++){
+    const h=maxB?Math.round(boxes[i]/maxB*56)+4:4;
+    lvis+=`<div class="l-box"><div class="l-bar-wrap"><div class="l-bar-fill" style="height:${h}px;background:${colors[i]}"></div></div><div class="l-box-num">${boxes[i]}</div><div class="l-box-lbl">Box ${i}</div></div>`;
+  }
+  const mastered=AA.filter(a=>(d[a.id]?.box||1)>=4).length;
+  document.getElementById('quiz-wrap').innerHTML=`
+  <div class="quiz-start">
+    <h2>Identify the Structure</h2>
+    <p>Each round shows a full amino acid structure. You have <strong>5 guesses</strong>. Hints unlock after each wrong guess. Amino acids you struggle with appear more often.</p>
+    <div class="leitner-vis">${lvis}</div>
+    <p style="font-size:.82rem;color:#64748b;margin-bottom:20px">${mastered}/${AA.length} amino acids in advanced boxes (4–5)</p>
+    <button class="btn-primary" onclick="startQuiz()">Start Quiz</button>
+  </div>`;
+}
+
+function renderQuizQ(){
+  const {q,guessesLeft,wrongGuesses,solved,done}=qs;
+  const progPct=Math.min(100,qs.score/500*100);
+  const slots=Array.from({length:MAX_GUESSES},(_,i)=>{
+    if(i<wrongGuesses.length)return`<div class="guess-slot wrong" title="${wrongGuesses[i]}">✗</div>`;
+    if(solved&&i===wrongGuesses.length)return`<div class="guess-slot correct">✓</div>`;
+    return`<div class="guess-slot pending"></div>`;
+  }).join('');
+  const hintsHTML=wrongGuesses.length?`<div class="q-hints">${wrongGuesses.map((_,i)=>i<HINTS.length?`<div class="q-hint-item">${HINTS[i](q.aa)}</div>`:'').join('')}</div>`:'';
+  const sorted=[...AA].sort((a,b)=>a.name.localeCompare(b.name));
+  const btns=sorted.map(a=>{
+    const isWrong=wrongGuesses.includes(a.name), isAns=done&&a.id===q.aa.id;
+    return`<button class="q-name-btn ${isAns?'correct':isWrong?'wrong':''}" ${(done||isWrong)?'disabled':''} onclick="guessAA('${a.id}')">${a.name}</button>`;
+  }).join('');
+  const ord=['1st','2nd','3rd','4th','5th'];
+  const fb=done?`<div class="q-feedback ${solved?'correct':'wrong'}" style="margin-top:14px">
+    ${solved?`Correct on the ${ord[wrongGuesses.length]} guess!`:'Out of guesses.'} ${q.feedback}
+    <div style="margin-top:8px;font-size:.78rem;opacity:.7">Box: ${getBox(q.aa.id)} | Mastery: ${getMastery(q.aa.id)}%</div>
+  </div><button class="q-next" onclick="nextQuestion()">Next →</button>`:'';
+  const rem=done?'':
+    `<div style="font-size:.78rem;color:#64748b;text-align:center;margin-bottom:2px">${guessesLeft} guess${guessesLeft===1?'':'es'} remaining</div>`;
+
+  document.getElementById('quiz-wrap').innerHTML=`
+  <div class="qprog">
+    <div class="qprog-bar"><div class="qprog-fill" style="width:${progPct}%"></div></div>
+    <div class="qprog-txt">${qs.score} pts</div>
+    <div class="streak">${qs.streak>1?'🔥 '+qs.streak:''}</div>
+  </div>
+  <div class="q-card">
+    <div class="q-type">Structure Recognition</div>
+    <div class="q-text">Identify this amino acid from its structure:</div>
+    <div class="struct-box" style="margin-bottom:10px">${sdLg(q.aa)}</div>
+    <div class="guess-slots">${slots}</div>
+    ${rem}${hintsHTML}
+    <div class="q-name-grid">${btns}</div>
+    ${fb}
+  </div>`;
+  drawAll();
+}
+
+function guessAA(id){
+  if(qs.done)return;
+  if(id===qs.q.aa.id){
+    qs.solved=true; qs.done=true; qs.streak++;
+    qs.score+=[50,35,20,10,5][qs.wrongGuesses.length]||5;
+    updateLeitner(qs.q.aa.id,true);
+  } else {
+    qs.wrongGuesses.push(AA.find(a=>a.id===id).name);
+    if(--qs.guessesLeft===0){qs.done=true;qs.streak=0;updateLeitner(qs.q.aa.id,false);}
+  }
+  renderQuizQ();
+}
+
+function nextQuestion(){
+  Object.assign(qs,{q:generateQuestion(),guessesLeft:MAX_GUESSES,wrongGuesses:[],solved:false,done:false});
+  renderQuizQ();
+}
+
+// ─── LEARN MODE ───────────────────────────────────────────────────────────────
+const CATS={
+  all:{label:'All 20',color:'#94a3b8'},
+  np:{label:'Nonpolar Aliphatic',color:'#d97706'},
+  ar:{label:'Aromatic',color:'#7c3aed'},
+  po:{label:'Polar Uncharged',color:'#0891b2'},
+  ac:{label:'Acidic',color:'#dc2626'},
+  ba:{label:'Basic',color:'#16a34a'}
+};
+let activeFilter='all';
+
+function renderLearn(){
+  document.getElementById('legend').innerHTML=Object.entries(CATS).map(([k,v])=>
+    `<div class="legend-item ${k===activeFilter?'active':''}" onclick="setFilter('${k}')">
+       <div class="ldot" style="background:${v.color}"></div>${v.label}
+     </div>`).join('');
+
+  const filtered=activeFilter==='all'?AA:AA.filter(a=>a.cat===activeFilter);
+  document.getElementById('cards-grid').innerHTML=filtered.map(aa=>{
+    const m=getMastery(aa.id);
+    const dots=[1,2,3,4,5].map(i=>`<div class="md ${i<=Math.round(m/20)?'on':''}"></div>`).join('');
+    return`<div class="aa-card ${aa.cat}" onclick="showDetail('${aa.id}')">
+      <div class="card-top">
+        <div><div class="card-name">${aa.name}</div><span class="badge ${aa.cat}">${aa.catLabel}</span></div>
+        <div class="card-codes"><div class="card-code3">${aa.a3}</div><div class="card-code1">${aa.a1}</div></div>
+      </div>
+      <div class="card-struct">${sdSm(aa)}</div>
+      <div class="card-rgroup">R: ${aa.rGroup}</div>
+      <div class="card-tags">${aa.properties.slice(0,2).map(p=>`<span class="tag">${p}</span>`).join('')}</div>
+      <div class="card-mastery">${dots}</div>
+    </div>`;
+  }).join('');
+  drawAll();
+}
+
+function setFilter(cat){activeFilter=cat;renderLearn();}
+
+function showDetail(id){
+  const aa=AA.find(a=>a.id===id);
+  if(!aa)return;
+  const codonHtml=aa.codons.map(c=>`<span class="codon">${c}</span>`).join('');
+  const propList=aa.properties.map(p=>`<li style="margin-bottom:4px">${p}</li>`).join('');
+  document.getElementById('modal').innerHTML=`
+  <div class="modal-hdr">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        <div class="modal-title">${aa.name}</div>
+        <span class="badge ${aa.cat}">${aa.catLabel}</span>
+      </div>
+      <div style="font-size:1.5rem;font-weight:700;color:#60a5fa;letter-spacing:.05em">${aa.a3} &nbsp; ${aa.a1}</div>
+    </div>
+    <button class="modal-close" onclick="closeModal()">×</button>
+  </div>
+  <div class="modal-body">
+    <div class="struct-box">${sdLg(aa)}</div>
+    <div class="props-grid">
+      <div class="prop"><div class="prop-lbl">R-Group</div><div class="prop-val" style="font-family:monospace">${aa.rGroup}</div></div>
+      <div class="prop"><div class="prop-lbl">Mol. Weight</div><div class="prop-val">${aa.mw} g/mol</div></div>
+      <div class="prop"><div class="prop-lbl">pI (isoelectric)</div><div class="prop-val">${aa.pI}</div></div>
+      <div class="prop"><div class="prop-lbl">Dietary</div>
+        ${aa.essential?'<span class="prop-val es">Essential</span>':'<span class="prop-val ne">Non-Essential</span>'}
+      </div>
+      <div class="prop"><div class="prop-lbl">pKa (α-NH₃⁺)</div><div class="prop-val">${aa.pKa.b}</div></div>
+      <div class="prop"><div class="prop-lbl">pKa (α-COOH)</div><div class="prop-val">${aa.pKa.a}</div></div>
+      ${aa.pKa.c?`<div class="prop" style="grid-column:span 2"><div class="prop-lbl">pKa (R-group)</div><div class="prop-val">${aa.pKa.c}</div></div>`:''}
+    </div>
+    <div class="section-hdr">Key Properties</div>
+    <ul style="padding-left:18px;font-size:.88rem;color:#cbd5e1;line-height:1.7">${propList}</ul>
+    <div class="section-hdr">Biological Roles</div>
+    <div class="detail-text">${aa.roles}</div>
+    <div class="section-hdr">Memory Hook</div>
+    <div class="detail-text" style="color:#fbbf24;font-style:italic">${aa.mnemonic}</div>
+    <div class="section-hdr">Codons</div>
+    <div class="codons">${codonHtml}</div>
+  </div>`;
+  const back=document.getElementById('modal-back');
+  back.style.display='flex';
+  requestAnimationFrame(()=>{back.classList.add('show');drawAll();});
+}
+
+function closeModal(e){
+  if(e&&e.target!==document.getElementById('modal-back'))return;
+  const back=document.getElementById('modal-back');
+  back.classList.remove('show');
+  setTimeout(()=>back.style.display='none',200);
+}
+
+// ─── PROGRESS ─────────────────────────────────────────────────────────────────
+function renderProgress(){
+  const d=getLS();
+  const practiced=AA.filter(a=>d[a.id]).length;
+  const mastered=AA.filter(a=>(d[a.id]?.box||0)>=4).length;
+  const totalQ=AA.reduce((s,a)=>s+(d[a.id]?.correct||0)+(d[a.id]?.wrong||0),0);
+  const totalC=AA.reduce((s,a)=>s+(d[a.id]?.correct||0),0);
+  const acc=totalQ?Math.round(totalC/totalQ*100):0;
+  const catColors={np:'#d97706',ar:'#7c3aed',po:'#0891b2',ac:'#dc2626',ba:'#16a34a'};
+  const rows=AA.map(a=>{
+    const s=d[a.id]||{box:1,correct:0,wrong:0};
+    const tot=(s.correct||0)+(s.wrong||0), m=tot?Math.round((s.correct||0)/tot*100):0;
+    return`<div class="prog-row">
+      <div><strong>${a.name}</strong> <span style="color:#64748b;font-size:.78rem">${a.a3}/${a.a1}</span></div>
+      <div><span class="badge ${a.cat}">${a.cat.toUpperCase()}</span></div>
+      <div style="color:#94a3b8">Box ${s.box||1}</div>
+      <div style="color:${m>=70?'#4ade80':m>=40?'#fbbf24':'#f87171'}">${tot?m+'%':'—'}</div>
+      <div><div class="prog-bar-wrap"><div class="prog-bar" style="width:${m}%;background:${catColors[a.cat]}"></div></div></div>
+      <div style="color:#64748b;font-size:.8rem">${s.correct||0}/${tot}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('progress-content').innerHTML=`
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">${practiced}/${AA.length}</div><div class="stat-lbl">Practiced</div></div>
+    <div class="stat-card"><div class="stat-num">${mastered}</div><div class="stat-lbl">Mastered (Box 4+)</div></div>
+    <div class="stat-card"><div class="stat-num">${acc}%</div><div class="stat-lbl">Accuracy</div></div>
+    <div class="stat-card"><div class="stat-num">${totalQ}</div><div class="stat-lbl">Questions Answered</div></div>
+  </div>
+  <div class="prog-table">
+    <div class="prog-row"><div>Amino Acid</div><div>Cat.</div><div>Box</div><div>Score</div><div>Mastery</div><div>Correct</div></div>
+    ${rows}
+  </div>
+  <div style="margin-top:16px;text-align:right">
+    <button onclick="if(confirm('Reset all progress?')){localStorage.removeItem('aa_leitner');renderProgress()}"
+      style="background:none;border:1px solid #334155;color:#64748b;padding:7px 14px;border-radius:6px;cursor:pointer;font-size:.82rem">
+      Reset Progress
+    </button>
+  </div>`;
+}
+
+// ─── REFERENCE TABLE ──────────────────────────────────────────────────────────
+function renderReference(){
+  const cc={np:'#d97706',ar:'#7c3aed',po:'#0891b2',ac:'#dc2626',ba:'#16a34a'};
+  document.getElementById('ref-table').innerHTML=`
+  <thead><tr>
+    <th>Name</th><th>3-Letter</th><th>1-Letter</th><th>Category</th><th>R-Group</th>
+    <th>MW</th><th>pI</th><th>pKa (COOH/NH₃/R)</th><th>Essential</th><th>Codons</th>
+  </tr></thead>
+  <tbody>${AA.map(a=>`<tr>
+    <td><strong>${a.name}</strong></td>
+    <td class="code">${a.a3}</td>
+    <td class="code" style="font-size:1.2rem">${a.a1}</td>
+    <td><span style="color:${cc[a.cat]}">${a.catLabel}</span></td>
+    <td style="font-family:monospace;font-size:.8rem">${a.rGroup}</td>
+    <td>${a.mw}</td><td>${a.pI}</td>
+    <td>${a.pKa.a}/${a.pKa.b}${a.pKa.c?'/'+a.pKa.c:''}</td>
+    <td>${a.essential?'<span style="color:#4ade80">Yes</span>':'<span style="color:#64748b">No</span>'}</td>
+    <td style="font-size:.75rem;color:#94a3b8">${a.codons.join(', ')}</td>
+  </tr>`).join('')}</tbody>`;
+}
+
+// ─── NAVIGATION ───────────────────────────────────────────────────────────────
+function nav(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  if(id==='quiz')  {if(!qs.active)renderQuizStart();}
+  if(id==='progress') renderProgress();
+  if(id==='reference') renderReference();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderLearn();
+</script>
+</body>
+</html>
