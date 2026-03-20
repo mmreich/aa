@@ -348,15 +348,12 @@ const AA = [
     pKa:{a:1.82,b:9.17,c:6.00}, codons:['CAU','CAC'] }
 ];
 
-// ─── STRUCTURE IMAGES (PubChem) ────────────────────────────────────────────────
-function pcUrl(aa, size) {
-  return 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/' + aa.cid + '/PNG?image_size=' + size;
-}
+// ─── STRUCTURE IMAGES ──────────────────────────────────────────────────────────
 function sdLg(aa) {
-  return `<img src="${pcUrl(aa,'large')}" class="struct-img" alt="${aa.name} structure" loading="lazy">`;
+  return `<img src="structures/${aa.id}.png" class="struct-img" alt="${aa.name} structure">`;
 }
 function sdSm(aa) {
-  return `<img src="${pcUrl(aa,'large')}" class="struct-img" alt="${aa.name} structure" loading="lazy">`;
+  return `<img src="structures/${aa.id}.png" class="struct-img" alt="${aa.name} structure">`;
 }
 
 // ─── SPACED REPETITION (LEITNER) ──────────────────────────────────────────────
