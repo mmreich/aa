@@ -167,7 +167,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2
 // ─── AMINO ACID DATA ───────────────────────────────────────────────────────────
 // smiles: full L-amino acid, neutral form (standard 2D depiction)
 const AA = [
-  { id:'gly', name:'Glycine',      a3:'Gly', a1:'G', cat:'np', catLabel:'Nonpolar Aliphatic',
+  { id:'gly', cid:750,    name:'Glycine',      a3:'Gly', a1:'G', cat:'np', catLabel:'Nonpolar Aliphatic',
     mw:75.0,  pI:5.97, essential:false,
     smiles:'NCC(O)=O',
     rGroup:'–H',
@@ -176,7 +176,7 @@ const AA = [
     mnemonic:'G = tiniest, no side chain—just H. The only amino acid without a chiral center.',
     pKa:{a:2.34,b:9.60}, codons:['GGU','GGC','GGA','GGG'] },
 
-  { id:'ala', name:'Alanine',      a3:'Ala', a1:'A', cat:'np', catLabel:'Nonpolar Aliphatic',
+  { id:'ala', cid:5950,   name:'Alanine',      a3:'Ala', a1:'A', cat:'np', catLabel:'Nonpolar Aliphatic',
     mw:89.0,  pI:6.00, essential:false,
     smiles:'N[C@@H](C)C(O)=O',
     rGroup:'–CH₃',
@@ -185,7 +185,7 @@ const AA = [
     mnemonic:'A = Alanine = just a methyl group. Very abundant.',
     pKa:{a:2.35,b:9.87}, codons:['GCU','GCC','GCA','GCG'] },
 
-  { id:'val', name:'Valine',       a3:'Val', a1:'V', cat:'np', catLabel:'Nonpolar Aliphatic',
+  { id:'val', cid:6287,   name:'Valine',       a3:'Val', a1:'V', cat:'np', catLabel:'Nonpolar Aliphatic',
     mw:117.1, pI:5.97, essential:true,
     smiles:'N[C@@H](C(C)C)C(O)=O',
     rGroup:'–CH(CH₃)₂',
@@ -194,7 +194,7 @@ const AA = [
     mnemonic:'V = Valine = V-shaped branch. BCAA. Val→Glu = sickle cell.',
     pKa:{a:2.32,b:9.62}, codons:['GUU','GUC','GUA','GUG'] },
 
-  { id:'leu', name:'Leucine',      a3:'Leu', a1:'L', cat:'np', catLabel:'Nonpolar Aliphatic',
+  { id:'leu', cid:6106,   name:'Leucine',      a3:'Leu', a1:'L', cat:'np', catLabel:'Nonpolar Aliphatic',
     mw:131.2, pI:5.98, essential:true,
     smiles:'N[C@@H](CC(C)C)C(O)=O',
     rGroup:'–CH₂CH(CH₃)₂',
@@ -203,7 +203,7 @@ const AA = [
     mnemonic:'L = Leucine = Lots of it. mTOR activator. Leucine zippers.',
     pKa:{a:2.36,b:9.60}, codons:['UUA','UUG','CUU','CUC','CUA','CUG'] },
 
-  { id:'ile', name:'Isoleucine',   a3:'Ile', a1:'I', cat:'np', catLabel:'Nonpolar Aliphatic',
+  { id:'ile', cid:6306,   name:'Isoleucine',   a3:'Ile', a1:'I', cat:'np', catLabel:'Nonpolar Aliphatic',
     mw:131.2, pI:6.02, essential:true,
     smiles:'N[C@@H]([C@@H](C)CC)C(O)=O',
     rGroup:'–CH(CH₃)CH₂CH₃',
@@ -212,7 +212,7 @@ const AA = [
     mnemonic:'I = Isoleucine = irregular branch, two chiral centers. BCAA.',
     pKa:{a:2.36,b:9.60}, codons:['AUU','AUC','AUA'] },
 
-  { id:'pro', name:'Proline',      a3:'Pro', a1:'P', cat:'np', catLabel:'Nonpolar Aliphatic',
+  { id:'pro', cid:145742, name:'Proline',      a3:'Pro', a1:'P', cat:'np', catLabel:'Nonpolar Aliphatic',
     mw:115.1, pI:6.30, essential:false,
     smiles:'OC(=O)[C@@H]1CCCN1',
     rGroup:'Cyclic pyrrolidine (N-Cα in ring)',
@@ -221,7 +221,7 @@ const AA = [
     mnemonic:'P = Proline = Peculiar cyclic. Helix breaker. Collagen + Vit C → Hydroxyproline.',
     pKa:{a:1.99,b:10.60}, codons:['CCU','CCC','CCA','CCG'] },
 
-  { id:'met', name:'Methionine',   a3:'Met', a1:'M', cat:'np', catLabel:'Nonpolar Aliphatic',
+  { id:'met', cid:6137,   name:'Methionine',   a3:'Met', a1:'M', cat:'np', catLabel:'Nonpolar Aliphatic',
     mw:149.2, pI:5.74, essential:true,
     smiles:'N[C@@H](CCSC)C(O)=O',
     rGroup:'–CH₂CH₂SCH₃',
@@ -230,7 +230,7 @@ const AA = [
     mnemonic:'M = Met = Must start every protein (AUG). SAM methyl donor.',
     pKa:{a:2.28,b:9.21}, codons:['AUG'] },
 
-  { id:'phe', name:'Phenylalanine',a3:'Phe', a1:'F', cat:'ar', catLabel:'Aromatic',
+  { id:'phe', cid:6140,   name:'Phenylalanine',a3:'Phe', a1:'F', cat:'ar', catLabel:'Aromatic',
     mw:165.2, pI:5.48, essential:true,
     smiles:'N[C@@H](Cc1ccccc1)C(O)=O',
     rGroup:'–CH₂–C₆H₅',
@@ -239,7 +239,7 @@ const AA = [
     mnemonic:'F = Phe = phenyl ring, no OH. PKU disease = Phe buildup.',
     pKa:{a:1.83,b:9.13}, codons:['UUU','UUC'] },
 
-  { id:'tyr', name:'Tyrosine',     a3:'Tyr', a1:'Y', cat:'ar', catLabel:'Aromatic',
+  { id:'tyr', cid:6057,   name:'Tyrosine',     a3:'Tyr', a1:'Y', cat:'ar', catLabel:'Aromatic',
     mw:181.2, pI:5.66, essential:false,
     smiles:'N[C@@H](Cc1ccc(O)cc1)C(O)=O',
     rGroup:'–CH₂–C₆H₄–4-OH',
@@ -248,7 +248,7 @@ const AA = [
     mnemonic:'Y = tYr = Tyr has OH on the para ring position. Phosphorylation hub. Catecholamine precursor.',
     pKa:{a:2.20,b:9.11,c:10.07}, codons:['UAU','UAC'] },
 
-  { id:'trp', name:'Tryptophan',   a3:'Trp', a1:'W', cat:'ar', catLabel:'Aromatic',
+  { id:'trp', cid:6305,   name:'Tryptophan',   a3:'Trp', a1:'W', cat:'ar', catLabel:'Aromatic',
     mw:204.2, pI:5.89, essential:true,
     smiles:'N[C@@H](Cc1c[nH]c2ccccc12)C(O)=O',
     rGroup:'–CH₂–indol-3-yl',
@@ -257,7 +257,7 @@ const AA = [
     mnemonic:'W = Trp = Whopping indole. Serotonin precursor. A280 = 280 nm protein quantification.',
     pKa:{a:2.38,b:9.39}, codons:['UGG'] },
 
-  { id:'ser', name:'Serine',       a3:'Ser', a1:'S', cat:'po', catLabel:'Polar Uncharged',
+  { id:'ser', cid:5951,   name:'Serine',       a3:'Ser', a1:'S', cat:'po', catLabel:'Polar Uncharged',
     mw:105.1, pI:5.68, essential:false,
     smiles:'N[C@@H](CO)C(O)=O',
     rGroup:'–CH₂OH',
@@ -266,7 +266,7 @@ const AA = [
     mnemonic:'S = Ser = Short chain with OH. Serine protease active site. Phosphorylated.',
     pKa:{a:2.21,b:9.15}, codons:['UCU','UCC','UCA','UCG','AGU','AGC'] },
 
-  { id:'thr', name:'Threonine',    a3:'Thr', a1:'T', cat:'po', catLabel:'Polar Uncharged',
+  { id:'thr', cid:6288,   name:'Threonine',    a3:'Thr', a1:'T', cat:'po', catLabel:'Polar Uncharged',
     mw:119.1, pI:6.16, essential:true,
     smiles:'N[C@@H]([C@@H](O)C)C(O)=O',
     rGroup:'–CH(OH)–CH₃',
@@ -275,7 +275,7 @@ const AA = [
     mnemonic:'T = Thr = Two chiral centers. OH and CH₃ on Cβ.',
     pKa:{a:2.15,b:9.12}, codons:['ACU','ACC','ACA','ACG'] },
 
-  { id:'cys', name:'Cysteine',     a3:'Cys', a1:'C', cat:'po', catLabel:'Polar Uncharged',
+  { id:'cys', cid:5862,   name:'Cysteine',     a3:'Cys', a1:'C', cat:'po', catLabel:'Polar Uncharged',
     mw:121.2, pI:5.07, essential:false,
     smiles:'N[C@@H](CS)C(O)=O',
     rGroup:'–CH₂SH',
@@ -284,7 +284,7 @@ const AA = [
     mnemonic:'C = Cys = Crosslinker: –SH → –S–S–. Glutathione. Most reactive AA.',
     pKa:{a:1.96,b:10.28,c:8.14}, codons:['UGU','UGC'] },
 
-  { id:'asn', name:'Asparagine',   a3:'Asn', a1:'N', cat:'po', catLabel:'Polar Uncharged',
+  { id:'asn', cid:6267,   name:'Asparagine',   a3:'Asn', a1:'N', cat:'po', catLabel:'Polar Uncharged',
     mw:132.1, pI:5.41, essential:false,
     smiles:'N[C@@H](CC(N)=O)C(O)=O',
     rGroup:'–CH₂CONH₂',
@@ -293,7 +293,7 @@ const AA = [
     mnemonic:'N = Asn = amide side chain. N-glycosylation on Asn.',
     pKa:{a:2.02,b:8.80}, codons:['AAU','AAC'] },
 
-  { id:'gln', name:'Glutamine',    a3:'Gln', a1:'Q', cat:'po', catLabel:'Polar Uncharged',
+  { id:'gln', cid:5961,   name:'Glutamine',    a3:'Gln', a1:'Q', cat:'po', catLabel:'Polar Uncharged',
     mw:146.2, pI:5.65, essential:false,
     smiles:'N[C@@H](CCC(N)=O)C(O)=O',
     rGroup:'–CH₂CH₂CONH₂',
@@ -302,7 +302,7 @@ const AA = [
     mnemonic:'Q = Gln = Longer amide than Asn. Nitrogen carrier. Gut fuel.',
     pKa:{a:2.17,b:9.13}, codons:['CAA','CAG'] },
 
-  { id:'asp', name:'Aspartate', pcName:'L-Aspartic acid',    a3:'Asp', a1:'D', cat:'ac', catLabel:'Acidic (–)',
+  { id:'asp', cid:5960,   name:'Aspartate',    a3:'Asp', a1:'D', cat:'ac', catLabel:'Acidic (–)',
     mw:133.1, pI:2.77, essential:false,
     smiles:'N[C@@H](CC(O)=O)C(O)=O',
     rGroup:'–CH₂COO⁻',
@@ -311,7 +311,7 @@ const AA = [
     mnemonic:'D = Asp = Deprotonated (negative) at pH 7. Neurotransmitter.',
     pKa:{a:1.88,b:9.60,c:3.65}, codons:['GAU','GAC'] },
 
-  { id:'glu', name:'Glutamate', pcName:'L-Glutamic acid',    a3:'Glu', a1:'E', cat:'ac', catLabel:'Acidic (–)',
+  { id:'glu', cid:33032,  name:'Glutamate',    a3:'Glu', a1:'E', cat:'ac', catLabel:'Acidic (–)',
     mw:147.1, pI:3.22, essential:false,
     smiles:'N[C@@H](CCC(O)=O)C(O)=O',
     rGroup:'–CH₂CH₂COO⁻',
@@ -320,7 +320,7 @@ const AA = [
     mnemonic:'E = Glu = Excitatory. One CH₂ longer than Asp. → GABA.',
     pKa:{a:2.19,b:9.67,c:4.25}, codons:['GAA','GAG'] },
 
-  { id:'lys', name:'Lysine',       a3:'Lys', a1:'K', cat:'ba', catLabel:'Basic (+)',
+  { id:'lys', cid:5962,   name:'Lysine',       a3:'Lys', a1:'K', cat:'ba', catLabel:'Basic (+)',
     mw:146.2, pI:9.74, essential:true,
     smiles:'N[C@@H](CCCCN)C(O)=O',
     rGroup:'–(CH₂)₄–NH₃⁺',
@@ -329,7 +329,7 @@ const AA = [
     mnemonic:'K = Lys = Long +NH₃ chain. Histone modifications (Ac, Ub, Me).',
     pKa:{a:2.18,b:8.95,c:10.53}, codons:['AAA','AAG'] },
 
-  { id:'arg', name:'Arginine',     a3:'Arg', a1:'R', cat:'ba', catLabel:'Basic (+)',
+  { id:'arg', cid:6322,   name:'Arginine',     a3:'Arg', a1:'R', cat:'ba', catLabel:'Basic (+)',
     mw:174.2, pI:10.76, essential:true,
     smiles:'N[C@@H](CCCNC(=N)N)C(O)=O',
     rGroup:'–(CH₂)₃–NH–C(=NH)–NH₂',
@@ -338,7 +338,7 @@ const AA = [
     mnemonic:'R = Arg = Really basic (pKa 12.5). NO precursor. Urea cycle.',
     pKa:{a:2.17,b:9.04,c:12.48}, codons:['CGU','CGC','CGA','CGG','AGA','AGG'] },
 
-  { id:'his', name:'Histidine',    a3:'His', a1:'H', cat:'ba', catLabel:'Basic (+)',
+  { id:'his', cid:6274,   name:'Histidine',    a3:'His', a1:'H', cat:'ba', catLabel:'Basic (+)',
     mw:155.2, pI:7.59, essential:true,
     smiles:'N[C@@H](Cc1cnc[nH]1)C(O)=O',
     rGroup:'–CH₂–imidazol-4-yl',
@@ -349,19 +349,14 @@ const AA = [
 ];
 
 // ─── STRUCTURE IMAGES (PubChem) ────────────────────────────────────────────────
-function pcName(aa) {
-  if (aa.pcName) return aa.pcName;
-  return aa.id === 'gly' ? 'Glycine' : 'L-' + aa.name;
-}
 function pcUrl(aa, size) {
-  return 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/' +
-    encodeURIComponent(pcName(aa)) + '/PNG?image_size=' + size;
+  return 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/' + aa.cid + '/PNG?image_size=' + size;
 }
 function sdLg(aa) {
-  return `<img src="${pcUrl(aa,'300x300')}" class="struct-img" alt="${aa.name} structure" loading="lazy">`;
+  return `<img src="${pcUrl(aa,'large')}" class="struct-img" alt="${aa.name} structure" loading="lazy">`;
 }
 function sdSm(aa) {
-  return `<img src="${pcUrl(aa,'200x200')}" class="struct-img" alt="${aa.name} structure" loading="lazy">`;
+  return `<img src="${pcUrl(aa,'large')}" class="struct-img" alt="${aa.name} structure" loading="lazy">`;
 }
 
 // ─── SPACED REPETITION (LEITNER) ──────────────────────────────────────────────
